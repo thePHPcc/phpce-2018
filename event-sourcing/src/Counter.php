@@ -24,8 +24,16 @@ class Counter
         if (count($events) > 0) {
             $this->reconstituteFrom($events);
         } else {
-            $this->doInitialize($initialValue);
+            $this->initializeCounterWith($initialValue);
         }
+    }
+
+    private function initializeCounterWith(int $initialValue)
+    {
+        $this->ensureInitialValueIsPositive($initialValue);
+
+        $event = new CounterInitializedEvent($initialValue);
+        $this->emit($event);
     }
 
     public function value(): int
@@ -37,8 +45,7 @@ class Counter
     {
         $this->ensureCounterDoesNotOverflow($this->value);
 
-        $event = new CounterIncrementedEvent($this->value + 1);
-        $this->emit($event);
+        $this->emit(new CounterIncrementedEvent($this->value + 1));
     }
 
     private function ensureInitialValueIsPositive(int $initialValue): void
@@ -63,13 +70,5 @@ class Counter
     private function applyCounterIncrementedEvent(CounterIncrementedEvent $event): void
     {
         $this->value = $event->counterValue();
-    }
-
-    private function doInitialize(int $initialValue)
-    {
-        $this->ensureInitialValueIsPositive($initialValue);
-
-        $event = new CounterInitializedEvent($initialValue);
-        $this->emit($event);
     }
 }
