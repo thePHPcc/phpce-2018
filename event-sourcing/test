@@ -1,0 +1,4 @@
+#!/bin/sh
+
+tools/phpab.phar -o src/autoload.php src/
+tools/phpunit.phar
