@@ -2,15 +2,12 @@
 
 class Counter
 {
+    use EventSourced;
+
     /**
      * @var int
      */
     private $value = 0;
-
-    /**
-     * @var Event[]
-     */
-    private $events = [];
 
     public static function fromEvents(array $events): Counter
     {
@@ -44,27 +41,6 @@ class Counter
         $this->emit($event);
     }
 
-    private function reconstituteFrom(array $events): void
-    {
-        foreach ($events as $event) {
-            $this->apply($event);
-        }
-    }
-
-    private function emit(Event $event): void
-    {
-        $this->apply($event);
-        $this->events[] = $event;
-    }
-
-    public function emittedEvents(): array
-    {
-        $events = $this->events;
-        $this->events = [];
-
-        return $events;
-    }
-
     private function ensureInitialValueIsPositive(int $initialValue): void
     {
         if ($initialValue < 0) {
@@ -76,18 +52,6 @@ class Counter
     {
         if ($currentValue >= PHP_INT_MAX) {
             throw new OverflowException('Cannot count that far');
-        }
-    }
-
-    private function apply(Event $event)
-    {
-        switch (get_class($event)) {
-            case CounterInitializedEvent::class:
-                $this->applyCounterInitializedEvent($event);
-                break;
-            case CounterIncrementedEvent::class:
-                $this->applyCounterIncrementedEvent($event);
-                break;
         }
     }
 

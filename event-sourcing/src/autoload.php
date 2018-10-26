@@ -11,6 +11,7 @@ spl_autoload_register(
                 'counterincrementedevent' => '/CounterIncrementedEvent.php',
                 'counterinitializedevent' => '/CounterInitializedEvent.php',
                 'event' => '/Event.php',
+                'eventsourced' => '/EventSourced.php',
                 'eventstore' => '/EventStore.php',
                 'inmemoryeventstore' => '/InMemoryEventStore.php'
             );
