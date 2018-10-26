@@ -48,6 +48,16 @@ class Counter
         $this->emit(new CounterIncrementedEvent($this->value + 1));
     }
 
+    private function applyCounterInitializedEvent(CounterInitializedEvent $event): void
+    {
+        $this->value = $event->initialValue();
+    }
+
+    private function applyCounterIncrementedEvent(CounterIncrementedEvent $event): void
+    {
+        $this->value = $event->counterValue();
+    }
+
     private function ensureInitialValueIsPositive(int $initialValue): void
     {
         if ($initialValue < 0) {
@@ -60,15 +70,5 @@ class Counter
         if ($currentValue >= PHP_INT_MAX) {
             throw new OverflowException('Cannot count that far');
         }
-    }
-
-    private function applyCounterInitializedEvent(CounterInitializedEvent $event): void
-    {
-        $this->value = $event->initialValue();
-    }
-
-    private function applyCounterIncrementedEvent(CounterIncrementedEvent $event): void
-    {
-        $this->value = $event->counterValue();
     }
 }
